@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Spider Login</title>
+
+<style>
+
+/* =========================
+   BASIC
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+body {
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    position: relative;
+
+    background-image: url("bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/* Blurred background */
+
+body::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -35px;
+
+    background-image: url("bg.png");
+
+    background-size: cover;
+    background-position: center;
+
+    filter: blur(14px);
+
+    transform: scale(1.08);
+
+    opacity: 0.82;
+
+    z-index: -3;
+}
+
+
+/* Dark / blue overlay */
+
+body::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(5, 20, 45, 0.58),
+            rgba(25, 80, 125, 0.25),
+            rgba(65, 25, 105, 0.55)
+        );
+
+    z-index: -2;
+}
+
+
+/* =========================
+   MOVING LIGHT
+========================= */
+
+.light {
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(60, 190, 255, 0.22),
+            transparent 70%
+        );
+
+    filter: blur(35px);
+
+    animation:
+        lightMove
+        14s
+        ease-in-out
+        infinite
+        alternate;
+
+    z-index: -1;
+}
+
+
+@keyframes lightMove {
+
+    0% {
+        transform:
+            translate(-250px, -120px);
+    }
+
+    50% {
+        transform:
+            translate(260px, 100px);
+    }
+
+    100% {
+        transform:
+            translate(-80px, 260px);
+    }
+}
+
+
+/* =========================
+   3D FLOOR
+========================= */
+
+.floor {
+
+    position: absolute;
+
+    width: 130%;
+    height: 35%;
+
+    left: -15%;
+    bottom: -21%;
+
+    transform:
+        perspective(700px)
+        rotateX(60deg);
+
+    background:
+        linear-gradient(
+            rgba(5, 20, 40, 0.25),
+            rgba(0, 0, 0, 0.85)
+        );
+
+    box-shadow:
+        0 -20px 80px
+        rgba(0, 0, 0, 0.60);
+
+    z-index: 1;
+}
+
+
+/* =========================
+   LOGIN CARD
+========================= */
+
+.login-card {
+
+    position: relative;
+
+    z-index: 5;
+
+    width: 430px;
+
+    padding: 42px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(70, 160, 205, 0.38),
+            rgba(105, 75, 190, 0.50)
+        );
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.42);
+
+    box-shadow:
+
+        0 30px 90px
+        rgba(0,0,0,0.58),
+
+        inset 0 0 35px
+        rgba(255,255,255,0.08);
+
+    animation:
+        cardStart
+        1.4s
+        cubic-bezier(.2,.8,.2,1)
+        forwards,
+
+        cardFloat
+        8s
+        ease-in-out
+        1.5s
+        infinite;
+
+    opacity: 0;
+}
+
+
+/* Card starting animation */
+
+@keyframes cardStart {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(50px)
+            scale(0.88)
+            rotateX(8deg);
+
+        filter: blur(10px);
+    }
+
+    70% {
+
+        opacity: 1;
+
+        transform:
+            translateY(-5px)
+            scale(1.02)
+            rotateX(0deg);
+
+        filter: blur(0);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1)
+            rotateX(0deg);
+
+        filter: blur(0);
+    }
+}
+
+
+/* Slow floating */
+
+@keyframes cardFloat {
+
+    0%, 100% {
+
+        transform:
+            translateY(0)
+            rotateX(0deg)
+            rotateY(0deg);
+    }
+
+    50% {
+
+        transform:
+            translateY(-9px)
+            rotateX(1deg)
+            rotateY(-1deg);
+    }
+}
+
+
+/* Neon border */
+
+.login-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -2px;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6bdcff,
+            transparent 35%,
+            #794cff
+        );
+
+    z-index: -1;
+
+    filter: blur(5px);
+
+    opacity: 0.75;
+}
+
+
+/* =========================
+   SPIDER WEB
+========================= */
+
+.web {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 150px;
+    height: 150px;
+
+    overflow: hidden;
+
+    opacity: 0.75;
+
+    pointer-events: none;
+}
+
+
+.web span {
+
+    position: absolute;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.68);
+
+    border-radius: 50%;
+}
+
+
+.web span:nth-child(1) {
+
+    width: 60px;
+    height: 60px;
+
+    top: -25px;
+    left: -25px;
+}
+
+
+.web span:nth-child(2) {
+
+    width: 100px;
+    height: 100px;
+
+    top: -45px;
+    left: -45px;
+}
+
+
+.web span:nth-child(3) {
+
+    width: 150px;
+    height: 150px;
+
+    top: -70px;
+    left: -70px;
+}
+
+
+/* =========================
+   SPIDER
+========================= */
+
+.spider {
+
+    position: absolute;
+
+    left: 25px;
+    top: 68px;
+
+    font-size: 38px;
+
+    animation:
+        spiderMove
+        7s
+        ease-in-out
+        infinite;
+
+    filter:
+        drop-shadow(
+            0 0 8px
+            rgba(0,0,0,0.9)
+        );
+}
+
+
+@keyframes spiderMove {
+
+    0%, 100% {
+
+        transform:
+            translateY(0)
+            rotate(-4deg);
+    }
+
+    50% {
+
+        transform:
+            translateY(13px)
+            rotate(4deg);
+    }
+}
+
+
+/* =========================
+   SPIDER LOGO
+========================= */
+
+.logo {
+
+    text-align: center;
+
+    margin-bottom: 10px;
+}
+
+
+.spider-logo {
+
+    font-size: 65px;
+
+    color: white;
+
+    text-shadow:
+
+        0 0 10px #4db8ff,
+
+        0 0 25px #308cff,
+
+        0 0 45px #734dff;
+
+    animation:
+        logoGlow
+        4s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+@keyframes logoGlow {
+
+    from {
+
+        filter:
+            drop-shadow(
+                0 0 5px #4db8ff
+            );
+    }
+
+    to {
+
+        filter:
+            drop-shadow(
+                0 0 25px #734dff
+            );
+    }
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+h1 {
+
+    color: white;
+
+    text-align: center;
+
+    font-size: 35px;
+
+    margin-bottom: 8px;
+}
+
+
+.subtitle {
+
+    color:
+        rgba(255,255,255,0.76);
+
+    text-align: center;
+
+    margin-bottom: 28px;
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+.input-box {
+
+    position: relative;
+
+    margin-bottom: 18px;
+}
+
+
+.input-box input {
+
+    width: 100%;
+
+    height: 58px;
+
+    padding:
+        0 18px;
+
+    color: white;
+
+    font-size: 15px;
+
+    border-radius: 15px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.42);
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,0.10);
+
+    transition: 0.3s;
+}
+
+
+.input-box input::placeholder {
+
+    color:
+        rgba(255,255,255,0.72);
+}
+
+
+.input-box input:focus {
+
+    border-color:
+        #6bd2ff;
+
+    box-shadow:
+        0 0 18px
+        rgba(70,170,255,0.48);
+}
+
+
+/* =========================
+   EYE
+========================= */
+
+.eye {
+
+    position: absolute;
+
+    right: 18px;
+    top: 18px;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 20px;
+}
+
+
+/* =========================
+   OPTIONS
+========================= */
+
+.options {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    color:
+        rgba(255,255,255,0.82);
+
+    font-size: 14px;
+
+    margin:
+        10px 0 25px;
+}
+
+
+.options a {
+
+    color:
+        #67d0ff;
+
+    text-decoration: none;
+}
+
+
+/* =========================
+   CONTINUE BUTTON
+========================= */
+
+.login-btn {
+
+    width: 100%;
+
+    height: 58px;
+
+    border: none;
+
+    border-radius: 15px;
+
+    color: white;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            90deg,
+            #087eea,
+            #633cff,
+            #c044ff
+        );
+
+    box-shadow:
+        0 10px 30px
+        rgba(75,70,255,0.45);
+
+    transition:
+        transform 0.3s,
+        box-shadow 0.3s;
+}
+
+
+.login-btn:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 15px 40px
+        rgba(80,80,255,0.70);
+}
+
+
+.login-btn:active {
+
+    transform:
+        scale(0.97);
+}
+
+
+/* =========================
+   REGISTER
+========================= */
+
+.register {
+
+    color:
+        rgba(255,255,255,0.76);
+
+    text-align: center;
+
+    margin-top: 24px;
+}
+
+
+.register a {
+
+    color:
+        #65d0ff;
+
+    font-weight: bold;
+
+    text-decoration: none;
+}
+
+
+/* =========================
+   SKIP LOGIN
+========================= */
+
+.skip-login {
+
+    display: block;
+
+    text-align: center;
+
+    margin-top: 18px;
+
+    color:
+        rgba(255,255,255,0.78);
+
+    font-size: 14px;
+
+    text-decoration: none;
+
+    transition: 0.3s;
+}
+
+
+.skip-login:hover {
+
+    color: #70d5ff;
+
+    text-shadow:
+        0 0 8px #65c8ff,
+        0 0 18px #65c8ff;
+}
+
+
+/* ==================================================
+   INSTAGRAM PROFILE
+   OUTSIDE THE LOGIN CARD
+================================================== */
+
+.instagram-profile {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 20px;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding:
+        8px 17px;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(15,15,35,0.30);
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.25);
+
+    box-shadow:
+        0 5px 25px
+        rgba(0,0,0,0.25);
+
+    opacity: 0;
+
+    animation:
+        instagramStart
+        1.4s
+        ease-out
+        1.4s
+        forwards;
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        background 0.35s ease;
+}
+
+
+/* Instagram starting animation */
+
+@keyframes instagramStart {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, 35px)
+            scale(0.70);
+
+        filter: blur(8px);
+    }
+
+    70% {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%, -4px)
+            scale(1.05);
+
+        filter: blur(0);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%, 0)
+            scale(1);
+
+        filter: blur(0);
+    }
+}
+
+
+/* =========================
+   INSTAGRAM LOGO
+========================= */
+
+.instagram-logo {
+
+    width: 27px;
+    height: 27px;
+
+    position: relative;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 8px;
+
+    border:
+        2px solid white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #833ab4,
+            #fd1d1d,
+            #fcb045
+        );
+
+    box-shadow:
+        0 0 10px
+        rgba(225,48,108,0.55);
+
+    flex-shrink: 0;
+
+    transition:
+        transform 0.35s,
+        box-shadow 0.35s;
+}
+
+
+/* Camera circle */
+
+.instagram-camera {
+
+    width: 10px;
+    height: 10px;
+
+    border:
+        2px solid white;
+
+    border-radius: 50%;
+}
+
+
+/* Camera dot */
+
+.instagram-dot {
+
+    position: absolute;
+
+    width: 4px;
+    height: 4px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    top: 4px;
+    right: 4px;
+}
+
+
+/* Instagram hover */
+
+.instagram-profile:hover {
+
+    transform:
+        translateX(-50%)
+        translateY(-4px)
+        scale(1.04);
+
+    background:
+        rgba(255,255,255,0.14);
+
+    box-shadow:
+
+        0 8px 30px
+        rgba(225,48,108,0.35),
+
+        0 0 20px
+        rgba(131,58,180,0.35);
+}
+
+
+.instagram-profile:hover
+.instagram-logo {
+
+    transform:
+        rotate(5deg)
+        scale(1.08);
+
+    box-shadow:
+
+        0 0 12px #fd1d1d,
+
+        0 0 22px #833ab4;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 520px) {
+
+    .login-card {
+
+        width: 90%;
+
+        padding:
+            30px 25px;
+    }
+
+
+    h1 {
+
+        font-size: 29px;
+    }
+
+
+    .spider-logo {
+
+        font-size: 55px;
+    }
+
+
+    .instagram-profile {
+
+        bottom: 13px;
+
+        font-size: 14px;
+
+        padding:
+            7px 13px;
+    }
+
+
+    .instagram-logo {
+
+        width: 24px;
+        height: 24px;
+
+        border-radius: 7px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- Moving light -->
+
+<div class="light"></div>
+
+
+<!-- 3D floor -->
+
+<div class="floor"></div>
+
+
+<!-- =========================
+     LOGIN CARD
+========================= -->
+
+<div class="login-card">
+
+
+    <!-- Spider web -->
+
+    <div class="web">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </div>
+
+
+    <!-- Small spider -->
+
+    <div class="spider">
+
+        🕷️
+
+    </div>
+
+
+    <!-- Spider logo -->
+
+    <div class="logo">
+
+        <div class="spider-logo">
+
+            🕷
+
+        </div>
+
+    </div>
+
+
+    <h1>
+
+        Welcome Back
+
+    </h1>
+
+
+    <p class="subtitle">
+
+        Login to continue
+
+    </p>
+
+
+    <!-- Name -->
+
+    <div class="input-box">
+
+        <input
+
+            id="demoName"
+
+            type="text"
+
+            placeholder="Enter your name"
+
+            autocomplete="off"
+
+        >
+
+    </div>
+
+
+    <!-- Demo password -->
+
+    <div class="input-box">
+
+        <input
+
+            id="demoPassword"
+
+            type="password"
+
+            placeholder="Demo password"
+
+            autocomplete="off"
+
+        >
+
+
+        <span
+
+            class="eye"
+
+            onclick="togglePassword()"
+
+        >
+
+            👁
+
+        </span>
+
+    </div>
+
+
+    <!-- Options -->
+
+    <div class="options">
+
+        <label>
+
+            <input
+                type="checkbox"
+            >
+
+            Remember me
+
+        </label>
+
+
+        <a href="#">
+
+            Forgot Password?
+
+        </a>
+
+    </div>
+
+
+    <!-- Continue -->
+
+    <button
+
+        class="login-btn"
+
+        onclick="demoLogin()"
+
+    >
+
+        Continue
+
+    </button>
+
+
+    <!-- Sign up -->
+
+    <div class="register">
+
+        Don't have an account?
+
+        <a href="#">
+
+            Sign up
+
+        </a>
+
+    </div>
+
+
+    <!-- Skip -->
+
+    <a
+
+        class="skip-login"
+
+        href="https://www.instagram.com/13____bali/"
+
+        target="_blank"
+
+        rel="noopener noreferrer"
+
+    >
+
+        Skip Login →
+
+    </a>
+
+
+</div>
+
+
+<!-- ==================================================
+     INSTAGRAM PROFILE
+     OUTSIDE CARD
+================================================== -->
+
+<a
+
+    class="instagram-profile"
+
+    href="https://www.instagram.com/13____bali/"
+
+    target="_blank"
+
+    rel="noopener noreferrer"
+
+>
+
+
+    <!-- Instagram icon -->
+
+    <span class="instagram-logo">
+
+        <span class="instagram-camera"></span>
+
+        <span class="instagram-dot"></span>
+
+    </span>
+
+
+    <!-- Instagram ID -->
+
+    <span class="instagram-name">
+
+        @13____bali
+
+    </span>
+
+
+</a>
+
+
+<script>
+
+
+/* =========================
+   PASSWORD SHOW / HIDE
+========================= */
+
+function togglePassword() {
+
+    const password =
+        document.getElementById(
+            "demoPassword"
+        );
+
+
+    if (
+        password.type === "password"
+    ) {
+
+        password.type = "text";
+
+    }
+
+    else {
+
+        password.type = "password";
+
+    }
+
+}
+
+
+/* =========================
+   DEMO CONTINUE
+========================= */
+
+function demoLogin() {
+
+    const name =
+        document.getElementById(
+            "demoName"
+        )
+        .value
+        .trim();
+
+
+    if (name === "") {
+
+        alert(
+            "Please enter your name."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document.querySelector(
+            ".login-btn"
+        );
+
+
+    button.innerHTML =
+        "Opening...";
+
+
+    setTimeout(function() {
+
+        window.location.href =
+            "https://www.instagram.com/13____bali/";
+
+    }, 1000);
+
+}
+
+</script>
+
+
+</body>
+</html>
